@@ -1,6 +1,12 @@
 module Gamepad (
-    Gamepad(Gamepad), GamepadButton(GamepadButton), GamepadMappingType, GamepadEvent, GamepadEventType(..),
-    getGamepads, addGamepadEventListener, getGamepad 
+    Gamepad(Gamepad),
+    GamepadButton(GamepadButton),
+    GamepadMappingType,
+    GamepadEvent,
+    GamepadEventType(..),
+    getGamepads,
+    addGamepadEventListener,
+    getGamepad
 ) where
 
 import Effect (Effect)
@@ -52,4 +58,3 @@ foreign import _addGamepadEventListener :: String -> (GamepadEvent -> Effect Uni
 
 addGamepadEventListener :: GamepadEventType -> (GamepadEvent -> Effect Unit) -> Effect Unit
 addGamepadEventListener eventType = _addGamepadEventListener (show eventType)
-
