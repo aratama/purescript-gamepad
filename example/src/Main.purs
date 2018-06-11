@@ -1,7 +1,8 @@
 module Main where
 
 import Control.Bind (bind, discard)
-import Data.Array (length, zipWith, (!!), (..))
+import Data.Array (length, zipWith, (!!), (..), mapWithIndex)
+import Data.Int (floor)
 import Data.Maybe (Maybe(..))
 import Data.Show (show)
 import Data.Traversable (for_)
@@ -11,7 +12,7 @@ import Effect (Effect)
 import Effect.Console (log)
 import Effect.Ref (new, read, write)
 import Gamepad (Gamepad(..), GamepadButton(..), GamepadEventType(..), addGamepadEventListener, getGamepad, getGamepads)
-import Prelude (not, otherwise, pure, unit, (&&), (<>))
+import Prelude (not, otherwise, pure, unit, (&&), (*), (+), (<>))
 
 main :: Effect Unit
 main = do
@@ -41,10 +42,31 @@ main = do
                                             pure unit
                         _ -> pure unit
                 _ -> pure unit
-            write gamepads ref 
+            write gamepads ref
+
+
+            for_ gamepads case _ of 
+                Nothing -> pure unit 
+                Just (Gamepad gamepad) -> do 
+                    for_ (mapWithIndex Tuple gamepad.buttons) \(Tuple index (GamepadButton button)) -> do 
+                        setButtonState button.pressed index
+
+                    let s = 40.0
+                    for_ (mapWithIndex Tuple gamepad.axes) \(Tuple index value) -> case index of 
+                        0 -> setButtonPosition "cx" (670 + floor (value * s)) 10 
+                        1 -> setButtonPosition "cy" (408 + floor (value * s)) 10
+                        2 -> setButtonPosition "cx" (1006 + floor (value * s)) 11
+                        3 -> setButtonPosition "cy" (408 + floor (value * s)) 11
+                        _ -> pure unit 
+
+
             rquestAnimationFrame update
 
     rquestAnimationFrame update
 
 
 foreign import rquestAnimationFrame :: Effect Unit -> Effect Unit
+
+foreign import setButtonState :: Boolean -> Int -> Effect Unit
+
+foreign import setButtonPosition :: String -> Int -> Int -> Effect Unit

@@ -8,7 +8,8 @@
     "url": "https://github.com/aratama/purescript-gamepad"
   },
   "scripts": {
-    "clean": "rimraf output && rimraf .pulp-cache",
+    "clean": "rimraf output .pulp-cache",
+    "clean-all": "rimraf output .pulp-cache npm_modules bower_components",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "purs compile \"bower_components/purescript-*/src/**/*.purs\" \"src/**/*.purs\"",
     "example": "purs compile \"bower_components/purescript-*/src/**/*.purs\" \"src/**/*.purs\" \"example/src/**/*.purs\"",
@@ -16,6 +17,5 @@
   },
   "author": "",
   "license": "MIT",
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

@@ -21,6 +21,7 @@
   "devDependencies": {
     "purescript-console": "^4.1.0",
     "purescript-refs": "^4.1.0",
-    "purescript-arrays": "^5.0.0"
+    "purescript-arrays": "^5.0.0",
+    "purescript-integers": "^4.0.0"
   }
 }
