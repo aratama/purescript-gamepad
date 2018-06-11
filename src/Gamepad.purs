@@ -1,17 +1,15 @@
 module Gamepad (
-    GAMEPAD, Gamepad(Gamepad), GamepadButton(GamepadButton), GamepadMappingType, GamepadEvent, GamepadEventType(..),
+    Gamepad(Gamepad), GamepadButton(GamepadButton), GamepadMappingType, GamepadEvent, GamepadEventType(..),
     getGamepads, addGamepadEventListener, getGamepad 
 ) where
 
-import Control.Monad.Eff (Eff)
+import Effect (Effect)
 import Data.Eq (class Eq)
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Data.Show (class Show, show)
 import Data.Unit (Unit)
 import Prelude (map, (<$>))
-
-foreign import data GAMEPAD :: !
 
 newtype GamepadButton = GamepadButton {
     pressed :: Boolean,
@@ -35,12 +33,12 @@ derive instance eqGamepad :: Eq Gamepad
 
 type GamepadMappingType = String
 
-foreign import _getGamepads :: forall eff. Eff (gamepad :: GAMEPAD | eff) (Array (Nullable Gamepad))
+foreign import _getGamepads :: Effect (Array (Nullable Gamepad))
 
-getGamepads :: forall eff. Eff (gamepad :: GAMEPAD | eff) (Array (Maybe Gamepad))
+getGamepads :: Effect (Array (Maybe Gamepad))
 getGamepads = map toMaybe <$> _getGamepads
 
-foreign import data GamepadEvent :: *
+foreign import data GamepadEvent :: Type
 
 foreign import getGamepad :: GamepadEvent -> Gamepad
 
@@ -50,8 +48,8 @@ instance showGamepadEventType :: Show GamepadEventType where
     show GamepadConnected = "gamepadconnected"
     show GamepadDisconnected = "gamepaddisconnected"
 
-foreign import _addGamepadEventListener :: forall eff. String -> (GamepadEvent -> Eff (gamepad :: GAMEPAD | eff) Unit) -> Eff (gamepad :: GAMEPAD | eff) Unit
+foreign import _addGamepadEventListener :: String -> (GamepadEvent -> Effect Unit) -> Effect Unit
 
-addGamepadEventListener :: forall eff. GamepadEventType -> (GamepadEvent -> Eff (gamepad :: GAMEPAD | eff) Unit) -> Eff (gamepad :: GAMEPAD | eff) Unit
+addGamepadEventListener :: GamepadEventType -> (GamepadEvent -> Effect Unit) -> Effect Unit
 addGamepadEventListener eventType = _addGamepadEventListener (show eventType)
 

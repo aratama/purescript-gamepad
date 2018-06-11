@@ -10,9 +10,9 @@
   "scripts": {
     "clean": "rimraf output && rimraf .pulp-cache",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "psc \"bower_components/purescript-*/src/**/*.purs\" \"src/**/*.purs\"",
-    "example": "psc \"bower_components/purescript-*/src/**/*.purs\" \"src/**/*.purs\" \"example/src/**/*.purs\"",
-    "postexample": "psc-bundle \"output/**/*.js\" --module Main --main Main --output example/public/index.js"
+    "build": "purs compile \"bower_components/purescript-*/src/**/*.purs\" \"src/**/*.purs\"",
+    "example": "purs compile \"bower_components/purescript-*/src/**/*.purs\" \"src/**/*.purs\" \"example/src/**/*.purs\"",
+    "postexample": "purs bundle \"output/**/*.js\" --module Main --main Main --output example/public/index.js"
   },
   "author": "",
   "license": "MIT",

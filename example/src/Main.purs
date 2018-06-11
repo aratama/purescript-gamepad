@@ -1,23 +1,22 @@
 module Main where
 
-import Control.Bind (bind, when)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
-import Control.Monad.Eff.Ref (REF, newRef, readRef, writeRef)
+import Control.Bind (bind, discard)
 import Data.Array (length, zipWith, (!!), (..))
-import Data.Foldable (traverse_)
-import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Maybe (Maybe(..))
 import Data.Show (show)
 import Data.Traversable (for_)
 import Data.Tuple (Tuple(..))
 import Data.Unit (Unit)
-import Gamepad (GAMEPAD, Gamepad(..), GamepadButton(..), GamepadEventType(..), addGamepadEventListener, getGamepad, getGamepads)
-import Prelude (pure, unit, (<>), (>>=), (/=), (&&), not, otherwise)
+import Effect (Effect)
+import Effect.Console (log)
+import Effect.Ref (new, read, write)
+import Gamepad (Gamepad(..), GamepadButton(..), GamepadEventType(..), addGamepadEventListener, getGamepad, getGamepads)
+import Prelude (not, otherwise, pure, unit, (&&), (<>))
 
-main :: forall eff. Eff (gamepad :: GAMEPAD, ref :: REF, console :: CONSOLE | eff) Unit
+main :: Effect Unit
 main = do
 
-    ref <- newRef []
+    ref <- new []
 
     addGamepadEventListener GamepadConnected \e -> do
         Gamepad gamepad <- pure (getGamepad e)
@@ -29,7 +28,7 @@ main = do
 
     let update = do
             gamepads <- getGamepads
-            gamepads' <- readRef ref
+            gamepads' <- read ref
             for_ (zipWith Tuple gamepads gamepads') case _ of
                 Tuple (Just (Gamepad x)) (Just (Gamepad y)) -> do
                     let buttons = zipWith Tuple x.buttons y.buttons
@@ -42,10 +41,10 @@ main = do
                                             pure unit
                         _ -> pure unit
                 _ -> pure unit
-            writeRef ref gamepads
+            write gamepads ref 
             rquestAnimationFrame update
 
     rquestAnimationFrame update
 
 
-foreign import rquestAnimationFrame :: forall eff. Eff eff Unit -> Eff eff Unit
+foreign import rquestAnimationFrame :: Effect Unit -> Effect Unit
